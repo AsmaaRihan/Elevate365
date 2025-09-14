@@ -1,8 +1,9 @@
 {
   "home": "Home",
   "settings": "Settings",
-  "favorites": "Favorites",
+  "category": "Category",
   "details": "Details",
   "view_details": "View Details",
-  "go_to_settings": "Go to settings"
+  "go_to_settings": "Go to settings",
+  "check_meals": "Check meals"
 }
