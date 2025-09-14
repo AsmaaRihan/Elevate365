@@ -31,6 +31,8 @@
     "expo-system-ui": "~5.0.11",
     "expo-web-browser": "~14.2.0",
     "i18next": "^25.4.2",
+    "loadsh": "^0.0.4",
+    "lodash": "^4.17.21",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "react-i18next": "^15.7.3",
@@ -40,11 +42,13 @@
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
+    "react-native-svg": "^15.12.1",
     "react-native-web": "~0.20.0",
     "react-native-webview": "13.13.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@types/lodash": "^4.17.20",
     "@types/react": "~19.0.10",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~9.2.0",
