@@ -1,5 +1,5 @@
 const config = {
-  URL: "https://www.themealdb.com/api/json/v1/1/",
+  URL: "https://dummyjson.com/",
   TIMEOUT: 10000,
 };
 
