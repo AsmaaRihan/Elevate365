@@ -1,52 +1,83 @@
-import { getAllCategories } from "@/src/api/mealsApi";
+import { getAllProducts } from "@/src/api/ProductsApi";
 
-import { FlatList, StyleSheet, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { FlatList, StyleSheet, TextInput, View } from "react-native";
 
 import { useEffect, useState } from "react";
 import { I18nextProvider } from "react-i18next";
 
-import { Category } from "@/src/api/categoriesResponse.dto";
-import CategoryView from "@/src/components/categoryView";
+import { Product } from "@/src/api/productsResponse.dto";
+import ProductView from "@/src/components/productView";
 import i18n from "@/src/language";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+//infinite query for pagination
 export default function Index() {
   const router = useRouter();
 
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
 
-  const fetchAllCategories = async () => {
-    const categoryResponse = await getAllCategories();
+  const fetchAllProducts = async ({ skip }: { skip?: number }) => {
+    const productsResponse = await getAllProducts({ skip });
 
-    setCategories(categoryResponse.categories);
+    setProducts(productsResponse?.products);
   };
 
   useEffect(() => {
-    fetchAllCategories();
+    fetchAllProducts({});
   });
 
   return (
     <SafeAreaView edges={["top"]}>
       <I18nextProvider i18n={i18n}>
         <View>
+          <View style={styles.searchContainer}>
+            <Ionicons
+              name="search"
+              size={22}
+              color="#888"
+              style={styles.searchIcon}
+            />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search products..."
+              placeholderTextColor="#888"
+              onChange={(e) => {
+                // console.log("e", e);
+                // _.debounce(
+                //   () => {
+                //     console.log("debounced", e);
+                //   },
+                //   300,
+                //   {
+                //     leading: false,
+                //     trailing: true,
+                //   }
+                // );
+              }}
+            />
+          </View>
+
           <FlatList
-            data={categories}
+            data={products}
             numColumns={2}
-            keyExtractor={(item) => item?.idCategory}
-            key={"categories_flat_list"}
+            // onEndReached={() => {
+            //   console.log("onEndReached");
+            //   fetchAllProducts({
+            //     skip: _.last(products) ? _.last(products)?.id : undefined,
+            //   });
+            // }}
+            keyExtractor={(item) => item?.id.toString()}
+            key={"products_flat_list"}
             style={styles.flatListStyle}
             renderItem={({ item }) => (
-              <CategoryView
+              <ProductView
                 item={item}
                 onPress={() =>
                   router.push({
-                    pathname: `/category/[categoryId]`,
+                    pathname: `/product/[productId]`,
                     params: {
-                      category: item?.strCategory,
-                      description: item?.strCategoryDescription,
-                      image: item?.strCategoryThumb,
-                      categoryId: item?.idCategory,
+                      productId: item?.id,
                     },
                   })
                 }
@@ -63,5 +94,31 @@ const styles = StyleSheet.create({
   flatListStyle: {
     alignContent: "stretch",
     padding: 10,
+  },
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    margin: 10,
+    paddingHorizontal: 12,
+    borderColor: "#007AFF",
+    borderWidth: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  searchIcon: {
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
+    height: 44,
+    fontSize: 16,
+    color: "#222",
+    backgroundColor: "transparent",
+    borderWidth: 0,
   },
 });

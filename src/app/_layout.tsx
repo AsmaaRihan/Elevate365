@@ -19,8 +19,8 @@ export default function RootLayout() {
       />
       <SafeAreaView>
         <Stack.Screen
-          name="category"
-          options={{ headerShown: false, title: t("category") }}
+          name="product"
+          options={{ headerShown: false, title: t("products") }}
         />
         <Stack.Screen
           name="details"

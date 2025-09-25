@@ -1,6 +1,6 @@
+import { Feather } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
 import { t } from "i18next";
-import { Image } from "react-native";
 
 export default function TabLayout() {
   return (
@@ -19,14 +19,7 @@ export default function TabLayout() {
         options={{
           title: t("home"),
           tabBarIcon: ({ size, color }) => (
-            <Image
-              width={size}
-              height={size}
-              tintColor={color}
-              source={{
-                uri: "https://img.icons8.com/?size=100&id=2797&format=png&color=000000",
-              }}
-            />
+            <Feather name="home" size={size} color={color} iconType="solid" />
           ),
         }}
       />
@@ -36,13 +29,11 @@ export default function TabLayout() {
           title: t("settings"),
           tabBarBadge: 2,
           tabBarIcon: ({ size, color }) => (
-            <Image
-              width={size}
-              height={size}
-              tintColor={color}
-              source={{
-                uri: "https://img.icons8.com/?size=100&id=BYnvGv84C52t&format=png&color=000000",
-              }}
+            <Feather
+              name="settings"
+              size={size}
+              color={color}
+              iconType="solid"
             />
           ),
         }}
