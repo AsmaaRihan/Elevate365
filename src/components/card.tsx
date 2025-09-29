@@ -5,9 +5,10 @@ const Card = ({ children }: { children: ReactNode }) => {
   return (
     <View
       style={{
-        padding: 7,
+        padding: 10,
         borderRadius: 20,
         backgroundColor: "#b3babacf",
+        margin: 4,
       }}
     >
       {children}

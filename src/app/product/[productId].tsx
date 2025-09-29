@@ -1,6 +1,7 @@
 import { getProductsById } from "@/src/api/ProductsApi";
 import { Product } from "@/src/api/productsResponse.dto";
 import Card from "@/src/components/card";
+import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -32,40 +33,64 @@ export default function Category() {
           resizeMode="cover"
         />
         <Text style={styles.titleStyle}>{product?.title}</Text>
+        <Text style={styles.categoryStyle}>{product?.category}</Text>
+        <View style={styles.ratingRow}>
+          <Text style={styles.ratingLabel}>Rating: </Text>
+          {product?.rating && (
+            <>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Ionicons
+                  key={i}
+                  name={
+                    i < Math.floor(product.rating) ? "star" : "star-outline"
+                  }
+                  size={18}
+                  color="#FFD700"
+                  style={{ marginRight: 2 }}
+                />
+              ))}
+            </>
+          )}
+        </View>
         <Text style={styles.descriptionStyle}>{product?.description}</Text>
-        <Text style={styles.descriptionStyle}>{product?.category}</Text>
         <Card>
-          <Text style={styles.priceStyle}>
-            {`Price: `}
-            <Text
-              style={[styles.priceStyle, styles.discountPrice]}
-            >{`${product?.price} `}</Text>
+          <View style={styles.priceRow}>
+            <Text style={styles.priceLabel}>Price:</Text>
+            <Text style={styles.priceValue}>{`$${product?.price}`}</Text>
             {product?.discountPercentage && (
-              <Text style={styles.priceStyle}>
-                {product?.discountPercentage}
-              </Text>
+              <Text
+                style={styles.discountBadge}
+              >{`-${product.discountPercentage}%`}</Text>
             )}
-          </Text>
+          </View>
+          <Text style={styles.availability}>{product?.availabilityStatus}</Text>
         </Card>
-        <Text style={styles.descriptionStyle}>
-          {`Rating: `}
-          <Text style={styles.descriptionStyle}>{product?.rating}</Text>
-        </Text>
-        <Text style={styles.descriptionStyle}>
-          {product?.availabilityStatus}
-        </Text>
-
         <Card>
           <Text style={styles.titleStyle}>Reviews</Text>
           <FlatList
             data={product?.reviews}
             keyExtractor={(item) => item?.reviewerEmail}
             renderItem={({ item }) => (
-              <View>
-                <Text>{item.rating}</Text>
-                <Text>{item.comment}</Text>
-                <Text>{item.date}</Text>
-                <Text>{item.reviewerName}</Text>
+              <View style={styles.reviewItem}>
+                <View style={styles.reviewRatingRow}>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Ionicons
+                      key={i}
+                      name={
+                        i < Math.round(item.rating) ? "star" : "star-outline"
+                      }
+                      size={14}
+                      color="#FFD700"
+                      style={{ marginRight: 1 }}
+                    />
+                  ))}
+                  <Text style={styles.reviewRatingValue}>{item.rating}</Text>
+                </View>
+                <Text style={styles.reviewComment}>{item.comment}</Text>
+                <Text style={styles.reviewMeta}>
+                  {item.reviewerName} •{" "}
+                  {new Date(item.date).toLocaleDateString()}
+                </Text>
               </View>
             )}
           />
@@ -83,14 +108,83 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     paddingTop: 10,
   },
-  titleStyle: { fontWeight: "bold", fontSize: 18 },
+  titleStyle: {
+    fontWeight: "bold",
+    fontSize: 22,
+    marginTop: 10,
+    marginBottom: 4,
+    color: "#222",
+  },
+  categoryStyle: {
+    fontSize: 14,
+    color: "#007AFF",
+    fontWeight: "600",
+    marginBottom: 6,
+    marginLeft: 2,
+  },
+  ratingRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 6,
+    marginLeft: 2,
+  },
+  ratingLabel: { fontSize: 14, color: "#444", marginRight: 4 },
+  ratingValue: { fontSize: 14, color: "#444", marginLeft: 4 },
   productImage: {
     resizeMode: "contain",
     width: "100%",
     height: 300,
     padding: 14,
   },
-  descriptionStyle: { fontSize: 12, padding: 10 },
+  descriptionStyle: {
+    fontSize: 15,
+    color: "#444",
+    marginBottom: 10,
+    marginLeft: 2,
+    marginRight: 2,
+  },
+  priceRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 8,
+    marginBottom: 2,
+  },
+  priceLabel: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#333",
+    marginRight: 6,
+  },
+  priceValue: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#007AFF",
+    marginRight: 10,
+  },
+  discountBadge: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "white",
+    backgroundColor: "red",
+    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+  availability: { fontSize: 13, color: "#008000", marginTop: 4, marginLeft: 2 },
+  reviewItem: {
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+    paddingVertical: 8,
+    marginBottom: 4,
+  },
+  reviewRatingRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 2,
+  },
+  reviewRatingValue: { fontSize: 12, color: "#444", marginLeft: 4 },
+  reviewComment: { fontSize: 13, color: "#333", marginBottom: 2 },
+  reviewMeta: { fontSize: 11, color: "#888" },
   priceStyle: {
     fontSize: 15,
     padding: 10,
@@ -102,14 +196,4 @@ const styles = StyleSheet.create({
     color: "red",
     textDecorationLine: "line-through",
   },
-  // button: {
-  //   alignItems: "center",
-  //   backgroundColor: "red",
-  //   borderRadius: 6,
-  //   height: 44,
-  //   paddingHorizontal: 2,
-  //   justifyContent: "center",
-  //   margin: 5,
-  // },
-  // titleButton: { color: "white" },
 });

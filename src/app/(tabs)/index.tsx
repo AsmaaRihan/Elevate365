@@ -1,7 +1,15 @@
-import { getAllProducts } from "@/src/api/ProductsApi";
+import { getAllProducts, getProductsBySearch } from "@/src/api/ProductsApi";
 
 import { Ionicons } from "@expo/vector-icons";
-import { FlatList, StyleSheet, TextInput, View } from "react-native";
+import {
+  FlatList,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 
 import { useEffect, useState } from "react";
 import { I18nextProvider } from "react-i18next";
@@ -10,21 +18,34 @@ import { Product } from "@/src/api/productsResponse.dto";
 import ProductView from "@/src/components/productView";
 import i18n from "@/src/language";
 import { useRouter } from "expo-router";
+import _ from "lodash";
 import { SafeAreaView } from "react-native-safe-area-context";
+
 //infinite query for pagination
 export default function Index() {
   const router = useRouter();
 
   const [products, setProducts] = useState<Product[]>([]);
+  const [searchProducts, setSearchProducts] = useState<Product[]>([]);
 
-  const fetchAllProducts = async ({ skip }: { skip?: number }) => {
-    const productsResponse = await getAllProducts({ skip });
+  const fetchAllProducts = async () => {
+    const productsResponse = await getAllProducts();
 
     setProducts(productsResponse?.products);
   };
 
+  const fetchProductsBySearch = async (text: string) => {
+    if (_.isEmpty(text)) {
+      setSearchProducts([]);
+      return;
+    }
+    const searchResponse = await getProductsBySearch(text);
+
+    setSearchProducts(searchResponse?.products);
+  };
+
   useEffect(() => {
-    fetchAllProducts({});
+    fetchAllProducts();
   });
 
   return (
@@ -42,48 +63,82 @@ export default function Index() {
               style={styles.searchInput}
               placeholder="Search products..."
               placeholderTextColor="#888"
-              onChange={(e) => {
-                // console.log("e", e);
-                // _.debounce(
-                //   () => {
-                //     console.log("debounced", e);
-                //   },
-                //   300,
-                //   {
-                //     leading: false,
-                //     trailing: true,
-                //   }
-                // );
-              }}
+              onChangeText={_.debounce((text: string) => {
+                fetchProductsBySearch(text);
+              }, 500)}
             />
           </View>
 
-          <FlatList
-            data={products}
-            numColumns={2}
-            // onEndReached={() => {
-            //   console.log("onEndReached");
-            //   fetchAllProducts({
-            //     skip: _.last(products) ? _.last(products)?.id : undefined,
-            //   });
-            // }}
-            keyExtractor={(item) => item?.id.toString()}
-            key={"products_flat_list"}
-            style={styles.flatListStyle}
-            renderItem={({ item }) => (
-              <ProductView
-                item={item}
-                onPress={() =>
-                  router.push({
-                    pathname: `/product/[productId]`,
-                    params: {
-                      productId: item?.id,
-                    },
-                  })
-                }
-              />
-            )}
-          />
+          {searchProducts.length > 0 ? (
+            <FlatList
+              data={searchProducts}
+              key={"searchProducts_flat_list"}
+              style={styles.flatListStyle}
+              ItemSeparatorComponent={() => (
+                <View style={{ height: 1, backgroundColor: "#ccc" }} />
+              )}
+              renderItem={({ item }) => (
+                <Pressable
+                  onPress={() =>
+                    router.push({
+                      pathname: `/product/[productId]`,
+                      params: {
+                        productId: item?.id,
+                      },
+                    })
+                  }
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginBottom: 10,
+                    }}
+                  >
+                    <Image
+                      source={{ uri: item?.images?.[0] }}
+                      style={{
+                        width: 50,
+                        height: 50,
+                        borderRadius: 8,
+                        marginRight: 10,
+                      }}
+                    />
+                    <Text style={{ fontWeight: "bold", fontSize: 16 }}>
+                      {item.title}
+                    </Text>
+                  </View>
+                </Pressable>
+              )}
+            />
+          ) : (
+            <FlatList
+              data={products}
+              numColumns={2}
+              // onEndReached={() => {
+              //   console.log("onEndReached");
+              //   fetchAllProducts({
+              //     skip: _.last(products) ? _.last(products)?.id : undefined,
+              //   });
+              // }}
+              keyExtractor={(item) => item?.id.toString()}
+              key={"products_flat_list"}
+              style={styles.flatListStyle}
+              renderItem={({ item }) => (
+                <ProductView
+                  item={item}
+                  onPress={() =>
+                    router.push({
+                      pathname: `/product/[productId]`,
+                      params: {
+                        productId: item?.id,
+                      },
+                    })
+                  }
+                />
+              )}
+            />
+          )}
         </View>
       </I18nextProvider>
     </SafeAreaView>
