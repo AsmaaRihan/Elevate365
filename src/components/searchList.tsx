@@ -34,8 +34,8 @@ const SearchList = ({ searchProducts }: { searchProducts: Product[] }) => {
             <Image
               source={{ uri: item?.images?.[0] }}
               style={{
-                width: 50,
-                height: 50,
+                width: 40,
+                height: 40,
                 borderRadius: 8,
                 marginRight: 10,
               }}

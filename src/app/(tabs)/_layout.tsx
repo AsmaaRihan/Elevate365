@@ -24,6 +24,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="search"
+        options={{
+          title: t("search"),
+          tabBarIcon: ({ size, color }) => (
+            <Feather name="search" size={size} color={color} iconType="solid" />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="settings"
         options={{
           title: t("settings"),
