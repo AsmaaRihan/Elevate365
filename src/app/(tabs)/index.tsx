@@ -1,22 +1,15 @@
 import { getAllProducts, getProductsBySearch } from "@/src/api/ProductsApi";
 
-import { Ionicons } from "@expo/vector-icons";
-import {
-  FlatList,
-  Image,
-  Pressable,
-  StyleSheet,
-  Text,
-  TextInput,
-  View,
-} from "react-native";
+import { FlatList, StyleSheet, TextInput, View } from "react-native";
 
 import { useEffect, useState } from "react";
 import { I18nextProvider } from "react-i18next";
 
 import { Product } from "@/src/api/productsResponse.dto";
-import ProductView from "@/src/components/productView";
+import ProductListItem from "@/src/components/ProductListItem";
+import SearchList from "@/src/components/searchList";
 import i18n from "@/src/language";
+import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import _ from "lodash";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -28,10 +21,11 @@ export default function Index() {
   const [products, setProducts] = useState<Product[]>([]);
   const [searchProducts, setSearchProducts] = useState<Product[]>([]);
 
-  const fetchAllProducts = async () => {
-    const productsResponse = await getAllProducts();
+  const fetchAllProducts = async (skip?: string) => {
+    console.log("fetchAllProducts,", skip);
+    const productsResponse = await getAllProducts(skip);
 
-    setProducts(productsResponse?.products);
+    setProducts((prev) => [...prev, ...productsResponse?.products]);
   };
 
   const fetchProductsBySearch = async (text: string) => {
@@ -45,8 +39,8 @@ export default function Index() {
   };
 
   useEffect(() => {
-    fetchAllProducts();
-  });
+    fetchAllProducts("");
+  }, []);
 
   return (
     <SafeAreaView edges={["top"]}>
@@ -70,62 +64,17 @@ export default function Index() {
           </View>
 
           {searchProducts.length > 0 ? (
-            <FlatList
-              data={searchProducts}
-              key={"searchProducts_flat_list"}
-              style={styles.flatListStyle}
-              ItemSeparatorComponent={() => (
-                <View style={{ height: 1, backgroundColor: "#ccc" }} />
-              )}
-              renderItem={({ item }) => (
-                <Pressable
-                  onPress={() =>
-                    router.push({
-                      pathname: `/product/[productId]`,
-                      params: {
-                        productId: item?.id,
-                      },
-                    })
-                  }
-                >
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      marginBottom: 10,
-                    }}
-                  >
-                    <Image
-                      source={{ uri: item?.images?.[0] }}
-                      style={{
-                        width: 50,
-                        height: 50,
-                        borderRadius: 8,
-                        marginRight: 10,
-                      }}
-                    />
-                    <Text style={{ fontWeight: "bold", fontSize: 16 }}>
-                      {item.title}
-                    </Text>
-                  </View>
-                </Pressable>
-              )}
-            />
+            <SearchList searchProducts={searchProducts} />
           ) : (
             <FlatList
               data={products}
               numColumns={2}
-              // onEndReached={() => {
-              //   console.log("onEndReached");
-              //   fetchAllProducts({
-              //     skip: _.last(products) ? _.last(products)?.id : undefined,
-              //   });
-              // }}
-              keyExtractor={(item) => item?.id.toString()}
+              keyExtractor={(item) => item?.title}
               key={"products_flat_list"}
               style={styles.flatListStyle}
               renderItem={({ item }) => (
-                <ProductView
+                <ProductListItem
+                  key={item?.title}
                   item={item}
                   onPress={() =>
                     router.push({
@@ -137,6 +86,8 @@ export default function Index() {
                   }
                 />
               )}
+              onEndReached={() => fetchAllProducts(products.length.toString())}
+              onEndReachedThreshold={1}
             />
           )}
         </View>

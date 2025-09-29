@@ -1,8 +1,8 @@
 import api from "./axiosConfig";
 
-export const getAllProducts = async () => {
+export const getAllProducts = async (skip = "") => {
   try {
-    const res = await api.get(`/products`);
+    const res = await api.get("/products", { params: { skip } });
 
     return res.data;
   } catch (err) {

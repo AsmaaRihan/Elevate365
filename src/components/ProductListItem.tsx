@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Product } from "../api/productsResponse.dto";
 
-const ProductView = ({
+const ProductListItem = ({
   item,
   onPress,
 }: {
@@ -22,7 +22,7 @@ const ProductView = ({
   );
 };
 
-export default ProductView;
+export default ProductListItem;
 
 const styles = StyleSheet.create({
   container: {
