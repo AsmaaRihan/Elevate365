@@ -1,4 +1,4 @@
-package com.elevate365
+package com.asmaa.elevate365
 
 import android.app.Application
 import android.content.res.Configuration
