@@ -1,11 +1,11 @@
-import { getProductsBySearch } from "@/src/api/ProductsApi";
-import { Product } from "@/src/api/productsResponse.dto";
-import SearchList from "@/src/components/searchList";
-import { Ionicons } from "@expo/vector-icons";
-import _ from "lodash";
-import { useState } from "react";
-import { StyleSheet, TextInput, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { getProductsBySearch } from '@/src/api/ProductsApi';
+import { Product } from '@/src/api/productsResponse.dto';
+import SearchList from '@/src/components/searchList';
+import colors from '@/src/theme/colors';
+import { Ionicons } from '@expo/vector-icons';
+import * as _ from 'lodash';
+import { useState } from 'react';
+import { StyleSheet, TextInput, View } from 'react-native';
 
 const SearchBar = () => {
   const [searchProducts, setSearchProducts] = useState<Product[]>([]);
@@ -20,18 +20,13 @@ const SearchBar = () => {
   };
 
   return (
-    <SafeAreaView edges={["top"]}>
+    <>
       <View style={styles.searchContainer}>
-        <Ionicons
-          name="search"
-          size={22}
-          color="#888"
-          style={styles.searchIcon}
-        />
+        <Ionicons name="search" size={22} color={colors.textSecondary} style={styles.searchIcon} />
         <TextInput
           style={styles.searchInput}
           placeholder="Search products..."
-          placeholderTextColor="#888"
+          placeholderTextColor={colors.textSecondary}
           autoFocus
           onChangeText={_.debounce((text: string) => {
             fetchProductsBySearch(text);
@@ -39,7 +34,7 @@ const SearchBar = () => {
         />
       </View>
       {searchProducts.length && <SearchList searchProducts={searchProducts} />}
-    </SafeAreaView>
+    </>
   );
 };
 
@@ -47,15 +42,15 @@ export default SearchBar;
 
 const styles = StyleSheet.create({
   searchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#fff",
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.background,
     borderRadius: 12,
     margin: 10,
     paddingHorizontal: 12,
-    borderColor: "#007AFF",
+    borderColor: colors.primary,
     borderWidth: 2,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -68,8 +63,8 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 44,
     fontSize: 16,
-    color: "#222",
-    backgroundColor: "transparent",
+    color: colors.text,
+    backgroundColor: 'transparent',
     borderWidth: 0,
   },
 });

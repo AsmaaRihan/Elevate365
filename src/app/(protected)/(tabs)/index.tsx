@@ -1,17 +1,17 @@
-import { getAllProducts } from "@/src/api/ProductsApi";
+import { getAllProducts } from '@/src/api/ProductsApi';
 
-import { FlatList, StyleSheet, View } from "react-native";
+import { FlatList, StyleSheet, View } from 'react-native';
 
-import { useEffect, useState } from "react";
-import { I18nextProvider } from "react-i18next";
+import { useEffect, useState } from 'react';
+import { I18nextProvider } from 'react-i18next';
 
-import { Product } from "@/src/api/productsResponse.dto";
-import ProductListItem from "@/src/components/productListItem";
-import i18n from "@/src/language";
-import { useRouter } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
+import '@/ReactotronConfig';
+import { Product } from '@/src/api/productsResponse.dto';
+import ProductListItem from '@/src/components/productListItem';
+import i18n from '@/src/language';
+import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-//infinite query for pagination
 export default function Index() {
   const router = useRouter();
 
@@ -27,11 +27,11 @@ export default function Index() {
   };
 
   useEffect(() => {
-    fetchAllProducts("");
+    fetchAllProducts('');
   }, []);
 
   return (
-    <SafeAreaView edges={["top"]}>
+    <SafeAreaView edges={['top']}>
       <I18nextProvider i18n={i18n}>
         <View>
           (
@@ -39,7 +39,7 @@ export default function Index() {
             data={products}
             numColumns={2}
             keyExtractor={(item) => item?.title}
-            key={"products_flat_list"}
+            key={'products_flat_list'}
             style={styles.flatListStyle}
             renderItem={({ item }) => (
               <ProductListItem
@@ -57,7 +57,7 @@ export default function Index() {
             )}
             onEndReached={() => fetchAllProducts(products.length.toString())}
             refreshing={loading}
-            onRefresh={() => console.warn("Refreshing...")}
+            onRefresh={() => console.warn('Refreshing...')}
           />
           )
         </View>
@@ -68,7 +68,7 @@ export default function Index() {
 
 const styles = StyleSheet.create({
   flatListStyle: {
-    alignContent: "stretch",
+    alignContent: 'stretch',
     padding: 10,
   },
 });
