@@ -1,25 +1,24 @@
 import colors from '@/src/theme/colors';
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { AuthContext } from '../Contex/AuthContext/authContext';
+import { useAuth } from '../Contex/AuthContext/authContext';
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const authContext = useContext(AuthContext);
+  const { logIn } = useAuth();
 
-  const handleSubmit = () => authContext.logIn();
+  const handleSubmit = () => logIn({ username, password });
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
       <TextInput
         style={styles.input}
-        placeholder="Email"
-        value={email}
-        onChangeText={setEmail}
-        keyboardType="email-address"
+        placeholder="username"
+        value={username}
+        onChangeText={setUsername}
         autoCapitalize="none"
       />
       <TextInput

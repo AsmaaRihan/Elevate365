@@ -1,15 +1,17 @@
-import { AuthContext } from '@/src/Contex/AuthContext/authContext';
+import { useAuth } from '@/src/Contex/AuthContext/authContext';
 import { Redirect, Stack } from 'expo-router';
 import { t } from 'i18next';
-import { useContext } from 'react';
 
 export default function ProtectedLayout() {
-  const authContext = useContext(AuthContext);
+  const { isLoggedIn, isReady } = useAuth();
 
-  if (!authContext.isLoggedIn) {
-    return <Redirect href="/login" />;
+  if (!isReady) {
+    return null;
   }
 
+  if (!isLoggedIn) {
+    return <Redirect href="/login" />;
+  }
   return (
     <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false, title: t('home') }} />

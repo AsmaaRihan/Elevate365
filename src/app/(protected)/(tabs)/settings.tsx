@@ -1,11 +1,10 @@
-import { AuthContext } from '@/src/Contex/AuthContext/authContext';
+import { useAuth } from '@/src/Contex/AuthContext/authContext';
 import colors from '@/src/theme/colors';
 import { changeLanguage } from 'i18next';
-import { useContext } from 'react';
 import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const SettingsScreen = () => {
-  const authContext = useContext(AuthContext);
+  const { logOut } = useAuth();
 
   const languages = [
     { code: 'ar', label: 'العربية' },
@@ -13,7 +12,7 @@ const SettingsScreen = () => {
   ];
 
   const handleLogout = () => {
-    authContext.logOut();
+    logOut();
   };
 
   return (
