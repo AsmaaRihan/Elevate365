@@ -1,23 +1,18 @@
-import { getProductsById } from '@/src/api/ProductsApi';
-import { Product } from '@/src/api/productsResponse.dto';
 import Card from '@/src/components/card';
+import useProductDetails from '@/src/hooks/useProducts/useProductDetails';
 import colors from '@/src/theme/colors';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalSearchParams } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { FlatList, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Category() {
   const { productId } = useLocalSearchParams();
-  const [product, setProduct] = useState<Product>();
 
-  useEffect(() => {
-    (async () => {
-      const _product = await getProductsById(productId as string);
-      setProduct(_product);
-    })();
-  });
+  const { data: product, isLoading } = useProductDetails(productId as string);
 
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
   return (
     <View style={styles.viewStyle}>
       <ScrollView style={styles.container}>

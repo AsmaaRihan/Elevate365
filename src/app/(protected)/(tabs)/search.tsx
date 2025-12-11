@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as _ from 'lodash';
 import { useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const SearchBar = () => {
   const [searchProducts, setSearchProducts] = useState<Product[]>([]);
@@ -20,7 +21,7 @@ const SearchBar = () => {
   };
 
   return (
-    <>
+    <SafeAreaView>
       <View style={styles.searchContainer}>
         <Ionicons name="search" size={22} color={colors.textSecondary} style={styles.searchIcon} />
         <TextInput
@@ -34,7 +35,7 @@ const SearchBar = () => {
         />
       </View>
       {searchProducts.length && <SearchList searchProducts={searchProducts} />}
-    </>
+    </SafeAreaView>
   );
 };
 

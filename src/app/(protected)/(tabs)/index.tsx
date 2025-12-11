@@ -1,13 +1,10 @@
-import { getAllProducts } from '@/src/api/ProductsApi';
-
 import { FlatList, StyleSheet, View } from 'react-native';
 
-import { useEffect, useState } from 'react';
 import { I18nextProvider } from 'react-i18next';
 
 import '@/ReactotronConfig';
-import { Product } from '@/src/api/productsResponse.dto';
 import ProductListItem from '@/src/components/productListItem';
+import { useProducts } from '@/src/hooks/useProducts/useProducts';
 import i18n from '@/src/language';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -15,20 +12,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function Index() {
   const router = useRouter();
 
-  const [products, setProducts] = useState<Product[]>([]);
-
-  const [loading, setLoading] = useState(false);
-  const fetchAllProducts = async (skip?: string) => {
-    setLoading(true);
-    const productsResponse = await getAllProducts(skip);
-
-    setProducts((prev) => [...prev, ...productsResponse?.products]);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchAllProducts('');
-  }, []);
+  const { data, isLoading: loading, fetchNextPage } = useProducts();
+  const products = data?.pages?.map((page) => page?.products).flat() || [];
 
   return (
     <SafeAreaView edges={['top']}>
@@ -55,7 +40,8 @@ export default function Index() {
                 }
               />
             )}
-            onEndReached={() => fetchAllProducts(products.length.toString())}
+            onEndReached={() => fetchNextPage()}
+            onEndReachedThreshold={0.5}
             refreshing={loading}
             onRefresh={() => console.warn('Refreshing...')}
           />
